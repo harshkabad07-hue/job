@@ -50,13 +50,23 @@ st.markdown('<h1 class="title">💰 Data Science Salary Predictor</h1>', unsafe_
 st.markdown("<p style='text-align: center;'>Predict the estimated salary for data science roles based on various factors.</p>", unsafe_allow_html=True)
 
 # Load model and metadata
+import subprocess
+
 def load_assets():
     try:
         model = joblib.load('salary_prediction_model.pkl')
         metadata = joblib.load('model_metadata.pkl')
         return model, metadata
-    except FileNotFoundError:
-        return None, None
+    except Exception as e:
+        print(f"Model loading failed ({e}). Retraining dynamically...")
+        try:
+            subprocess.run(["python", "train_model.py"], check=True)
+            model = joblib.load('salary_prediction_model.pkl')
+            metadata = joblib.load('model_metadata.pkl')
+            return model, metadata
+        except Exception as retrain_error:
+            st.error(f"Failed to retrain model: {retrain_error}")
+            return None, None
 
 model, metadata = load_assets()
 
