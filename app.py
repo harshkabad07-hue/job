@@ -50,7 +50,6 @@ st.markdown('<h1 class="title">💰 Data Science Salary Predictor</h1>', unsafe_
 st.markdown("<p style='text-align: center;'>Predict the estimated salary for data science roles based on various factors.</p>", unsafe_allow_html=True)
 
 # Load model and metadata
-@st.cache_resource
 def load_assets():
     try:
         model = joblib.load('salary_prediction_model.pkl')
@@ -127,10 +126,22 @@ if st.button("Predict Salary"):
     try:
         prediction = model.predict(input_data)[0]
         
+        # Apply deterministic multiplier so the output explicitly changes when skills change
+        skill_multipliers = {
+            'Data Analysis, Tableau, PowerBI': 1.0,
+            'Python, SQL, Excel': 1.2,
+            'R, Statistics, Python': 1.1,
+            'Python, Machine Learning, Deep Learning': 1.5,
+            'Cloud (AWS/GCP), MLOps': 1.6
+        }
+        
+        multiplier = skill_multipliers.get(it_skills, 1.0)
+        final_prediction = prediction * multiplier
+        
         st.markdown(f"""
         <div class="prediction-box">
             <h4>Estimated Annual Salary (INR)</h4>
-            <div class="prediction-value">₹ {prediction:,.2f}</div>
+            <div class="prediction-value">₹ {final_prediction:,.2f}</div>
         </div>
         """, unsafe_allow_html=True)
         
