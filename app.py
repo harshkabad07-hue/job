@@ -51,6 +51,7 @@ st.markdown("<p style='text-align: center;'>Predict the estimated salary for dat
 
 # Load model and metadata
 import subprocess
+import sys
 
 def load_assets():
     try:
@@ -60,7 +61,10 @@ def load_assets():
     except Exception as e:
         print(f"Model loading failed ({e}). Retraining dynamically...")
         try:
-            subprocess.run(["python", "train_model.py"], check=True)
+            result = subprocess.run([sys.executable, "train_model.py"], capture_output=True, text=True)
+            if result.returncode != 0:
+                st.error(f"Failed to retrain model. Output:\n{result.stderr}")
+                return None, None
             model = joblib.load('salary_prediction_model.pkl')
             metadata = joblib.load('model_metadata.pkl')
             return model, metadata
