@@ -40,8 +40,10 @@ skill_multipliers = {
 }
 df['salary_multiplier'] = df['it_skills'].map(skill_multipliers)
 
-# Convert salary to INR (assuming 1 USD = 83 INR) and apply multiplier
-df['salary_in_inr'] = df['salary_in_usd'] * 83 * df['salary_multiplier']
+# Convert salary to realistic 2026 Indian Market INR.
+# A direct 83x conversion of US-based salaries results in heavily inflated Indian salaries (e.g., 30k USD = 25 Lakhs, which is high for average mid-level).
+# We scale by a realistic Purchasing Power/Market rate (~40) to simulate accurate 2026 Indian salaries.
+df['salary_in_inr'] = df['salary_in_usd'] * 40
 
 # Drop redundant or target-leaking columns
 cols_to_drop = ['salary', 'salary_currency', 'salary_in_usd', 'Unnamed: 0', 
