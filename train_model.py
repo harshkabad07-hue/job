@@ -40,10 +40,10 @@ skill_multipliers = {
 }
 df['salary_multiplier'] = df['it_skills'].map(skill_multipliers)
 
-# Convert salary to realistic 2026 Indian Market INR.
-# A direct 83x conversion of US-based salaries results in heavily inflated Indian salaries (e.g., 30k USD = 25 Lakhs, which is high for average mid-level).
-# We scale by a realistic Purchasing Power/Market rate (~40) to simulate accurate 2026 Indian salaries.
-df['salary_in_inr'] = df['salary_in_usd'] * 40
+# Convert salary to realistic 2025/2026 Indian Market INR.
+# We scale by a realistic Purchasing Power rate (~40) and add a ~15% inflation adjustment 
+# to project 2023 dataset numbers up to the 2025/2026 market standards.
+df['salary_in_inr'] = df['salary_in_usd'] * 40 * 1.15
 
 # Drop redundant or target-leaking columns
 cols_to_drop = ['salary', 'salary_currency', 'salary_in_usd', 'Unnamed: 0', 
@@ -57,9 +57,8 @@ X = df.drop('salary_in_inr', axis=1)
 y = df['salary_in_inr']
 
 # Identify categorical and numerical columns
-categorical_features = ['experience_level', 'employment_type', 'job_title', 
-                        'company_size', 'it_skills']
-numeric_features = ['work_year', 'remote_ratio']
+categorical_features = ['experience_level', 'employment_type', 'job_title', 'it_skills']
+numeric_features = ['remote_ratio']
 
 # Keep only existing columns
 categorical_features = [col for col in categorical_features if col in X.columns]

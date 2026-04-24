@@ -112,16 +112,10 @@ with col1:
     
     it_skills = st.selectbox("Primary IT Skills", metadata.get('it_skills', []))
 
-    work_year = st.selectbox("Year", metadata['work_year'], index=len(metadata['work_year'])-1)
-
 with col2:
     emp_display = st.selectbox("Employment Type", [emp_type_map.get(e, e) for e in metadata['employment_type']])
     emp_val = [k for k, v in emp_type_map.items() if v == emp_display]
     emp_val = emp_val[0] if emp_val else emp_display
-    
-    company_size_display = st.selectbox("Company Size", [size_map.get(s, s) for s in metadata['company_size']])
-    size_val = [k for k, v in size_map.items() if v == company_size_display]
-    size_val = size_val[0] if size_val else company_size_display
 
     remote_ratio = st.selectbox("Remote Ratio (%)", metadata['remote_ratio'])
 
@@ -131,9 +125,7 @@ if st.button("Predict Salary"):
         'experience_level': [exp_val],
         'employment_type': [emp_val],
         'job_title': [job_title],
-        'company_size': [size_val],
         'it_skills': [it_skills],
-        'work_year': [work_year],
         'remote_ratio': [remote_ratio]
     })
     
